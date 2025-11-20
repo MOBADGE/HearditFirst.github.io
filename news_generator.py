@@ -123,15 +123,12 @@ def ask_chatgpt(prompt: str) -> str:
 
 
 def update_index_html(article_html: str):
-    """Replace the article content in index.html with the new summary + sources."""
+    """Replace the article content inside <div id="article">...</div>."""
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
     today = datetime.date.today().strftime("%B %d, %Y")
 
-    # We assume index.html has:
-    # <p class="article-date">...</p>
-    # <div id="article"> ... </div>
     marker_start = '<div id="article">'
     marker_end = "</div>"
 
@@ -142,18 +139,18 @@ def update_index_html(article_html: str):
     before, rest = html.split(marker_start, 1)
     inside, after = rest.split(marker_end, 1)
 
-    # Build new block with updated date and article
-     new_article_block = (
-        f'{marker_start}\n'
+    # Build new content INSIDE the article div
+    inner_html = (
         f'<p class="article-date">Updated: {today}</p>\n'
-        f'{article_html}\n'
-        f'{marker_end}'
+        f'{article_html}'
     )
 
-    new_html = before + new_article_block + after
+    # Assemble the full HTML
+    new_html = before + marker_start + "\n" + inner_html + "\n" + marker_end + after
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(new_html)
+
 
 
 def build_sources_html(items):
