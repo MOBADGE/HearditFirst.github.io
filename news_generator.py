@@ -183,18 +183,25 @@ def main():
     prompt = build_prompt(items)
     summary = ask_chatgpt(prompt)
 
-    # Convert paragraphs (split on double newlines) to HTML <p> tags
-summary_html = ""
-for block in summary.split("\n\n"):
-    text = block.strip()
+    # Remove any extra "Updated:" lines the model may have added
+    summary = "\n".join(
+        line for line in summary.split("\n")
+        if not line.strip().startswith("Updated:")
+    )
 
-    # If ChatGPT produced a markdown-style header (### Title)
-    if text.startswith("###"):
-        clean_title = text.lstrip("#").strip()
-        summary_html += f"<h2>{clean_title}</h2>\n"
-    else:
-        summary_html += f"<p>{text}</p>\n"
+    # Convert the summary into HTML: H2 for markdown headers, P for regular text
+    summary_html = ""
+    for block in summary.split("\n\n"):
+        text = block.strip()
+        if not text:
+            continue
 
+        # If ChatGPT produced a markdown-style header (### Title)
+        if text.startswith("###"):
+            clean_title = text.lstrip("#").strip()
+            summary_html += f"<h2>{clean_title}</h2>\n"
+        else:
+            summary_html += f"<p>{text}</p>\n"
 
     # Build sources block with dates
     sources_html = build_sources_html(items)
@@ -204,6 +211,7 @@ for block in summary.split("\n\n"):
 
     update_index_html(full_html)
     print("index.html updated with new daily brief and sources.")
+
 
 
 if __name__ == "__main__":
