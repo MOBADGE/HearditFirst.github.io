@@ -184,11 +184,17 @@ def main():
     summary = ask_chatgpt(prompt)
 
     # Convert paragraphs (split on double newlines) to HTML <p> tags
-    summary_html = "".join(
-        f"<p>{block.strip()}</p>\n"
-        for block in summary.split("\n\n")
-        if block.strip()
-    )
+summary_html = ""
+for block in summary.split("\n\n"):
+    text = block.strip()
+
+    # If ChatGPT produced a markdown-style header (### Title)
+    if text.startswith("###"):
+        clean_title = text.lstrip("#").strip()
+        summary_html += f"<h2>{clean_title}</h2>\n"
+    else:
+        summary_html += f"<p>{text}</p>\n"
+
 
     # Build sources block with dates
     sources_html = build_sources_html(items)
