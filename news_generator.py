@@ -16,7 +16,7 @@ RSS_FEEDS = [
 ]
 
 # Max number of articles to include in the summary
-MAX_ARTICLES = 5
+MAX_ARTICLES = 10
 
 # OpenAI client – reads the key from the environment variable we set as a GitHub secret
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
