@@ -143,9 +143,11 @@ def update_index_html(article_html: str):
     inside, after = rest.split(marker_end, 1)
 
     # Build new block with updated date and article
-    new_article_block = (
+     new_article_block = (
+        f'{marker_start}\n'
         f'<p class="article-date">Updated: {today}</p>\n'
-        f'{marker_start}\n{article_html}\n{marker_end}'
+        f'{article_html}\n'
+        f'{marker_end}'
     )
 
     new_html = before + new_article_block + after
