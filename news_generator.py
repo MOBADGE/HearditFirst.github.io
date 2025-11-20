@@ -3,6 +3,7 @@ import datetime
 import textwrap
 import requests
 import xml.etree.ElementTree as ET
+from email.utils import parsedate_to_datetime
 
 from openai import OpenAI
 
@@ -22,7 +23,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 def fetch_rss_items():
-    """Fetch top items from the RSS feeds."""
+    """Fetch top items from the RSS feeds, including publication dates."""
     items = []
     for feed_url in RSS_FEEDS:
         try:
@@ -33,8 +34,17 @@ def fetch_rss_items():
                 title = item.findtext("title", default="").strip()
                 desc = item.findtext("description", default="").strip()
                 link = item.findtext("link", default="").strip()
+                pub_date_raw = item.findtext("pubDate", default="").strip()
+
                 if title:
-                    items.append({"title": title, "description": desc, "link": link})
+                    items.append(
+                        {
+                            "title": title,
+                            "description": desc,
+                            "link": link,
+                            "pub_date_raw": pub_date_raw,
+                        }
+                    )
         except Exception as e:
             print(f"Error fetching {feed_url}: {e}")
 
@@ -49,12 +59,29 @@ def fetch_rss_items():
     return unique[:MAX_ARTICLES]
 
 
+def format_pub_date(raw: str) -> str:
+    """Convert RSS pubDate string to YYYY-MM-DD where possible."""
+    if not raw:
+        return "Unknown date"
+    try:
+        dt = parsedate_to_datetime(raw)
+        # Convert to date only
+        return dt.date().strftime("%Y-%m-%d")
+    except Exception:
+        # If parsing fails, just return the raw string
+        return raw
+
+
 def build_prompt(items):
     """Build the prompt we send to ChatGPT from the news items."""
     bullets = []
     for i, it in enumerate(items, start=1):
+        date_str = format_pub_date(it.get("pub_date_raw", ""))
         bullets.append(
-            f"{i}. {it['title']}\n   {it['description']}\n   Link: {it['link']}"
+            f"{i}. {it['title']}\n"
+            f"   Date: {date_str}\n"
+            f"   {it['description']}\n"
+            f"   Link: {it['link']}"
         )
     news_block = "\n\n".join(bullets)
 
@@ -96,7 +123,7 @@ def ask_chatgpt(prompt: str) -> str:
 
 
 def update_index_html(article_html: str):
-    """Replace the article content in index.html with the new summary."""
+    """Replace the article content in index.html with the new summary + sources."""
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
@@ -127,6 +154,26 @@ def update_index_html(article_html: str):
         f.write(new_html)
 
 
+def build_sources_html(items):
+    """Build an HTML list of sources with their publication dates."""
+    if not items:
+        return ""
+
+    lines = []
+    for it in items:
+        date_str = format_pub_date(it.get("pub_date_raw", ""))
+        title = it["title"]
+        link = it["link"]
+        # Basic HTML-escaped-ish output (these fields are from RSS so should be safe enough here)
+        lines.append(
+            f'<li><a href="{link}" target="_blank" rel="noopener noreferrer">{title}</a> '
+            f'<span class="source-date">({date_str})</span></li>'
+        )
+
+    html = "<h2>Sources &amp; Dates</h2>\n<ul>\n" + "\n".join(lines) + "\n</ul>"
+    return html
+
+
 def main():
     items = fetch_rss_items()
     if not items:
@@ -137,14 +184,20 @@ def main():
     summary = ask_chatgpt(prompt)
 
     # Convert paragraphs (split on double newlines) to HTML <p> tags
-    paragraphs = "".join(
+    summary_html = "".join(
         f"<p>{block.strip()}</p>\n"
         for block in summary.split("\n\n")
         if block.strip()
     )
 
-    update_index_html(paragraphs)
-    print("index.html updated with new daily brief.")
+    # Build sources block with dates
+    sources_html = build_sources_html(items)
+
+    # Combine summary + horizontal rule + sources
+    full_html = summary_html + "\n<hr />\n" + sources_html
+
+    update_index_html(full_html)
+    print("index.html updated with new daily brief and sources.")
 
 
 if __name__ == "__main__":
