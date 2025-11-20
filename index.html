@@ -2,88 +2,206 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>A Little Birdy Told Me</title>
+  <title>Heard It First – AI-Powered News</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2933;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.65);
+      --radius-xl: 1.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      line-height: 1.6;
+      color: var(--text);
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #020617 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
     }
-    h1 {
-      text-align: center;
+
+    .page {
+      width: 100%;
+      max-width: 960px;
     }
-    .article-date {
-      font-size: 0.9rem;
-      color: #666;
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
-  </style>
-</head>
-<body>
-  <h1>A Little Birdy Told Me</h1>
-  <div id="article">
-<p class="article-date">Updated: November 20, 2025</p>
-<h2>International Diplomacy: US-Russia Peace Plan on Ukraine</h2>
-<p>The United States has proposed a peace plan aimed at resolving the conflict between Russia and Ukraine. This plan was reportedly developed by US and Russian officials but notably without Ukraine's participation. Ukrainian President Volodymyr Zelensky is set to discuss the proposal with former US President Donald Trump, who appears to be involved in the dialogue. The absence of Ukraine in drafting the plan raises questions about its potential acceptance and effectiveness, as Kyiv remains a key stakeholder in the peace process. The coming talks may shape the prospects for ending the prolonged conflict.</p>
-<h2>Middle East: Renewed Violence in Gaza</h2>
-<p>Tensions escalated in Gaza as Israeli military strikes killed 25 Palestinians. These attacks followed gunfire by militants against Israeli soldiers, actions said to violate a ceasefire that has been in place for five weeks. The Israeli military targeted several Hamas positions in response. This development disrupts recent calm and highlights the fragility of the ceasefire, with possible consequences for stability in the region if hostilities continue.</p>
-<h2>United States: Justice Department Ordered to Release Epstein Files</h2>
-<p>In Washington, US President Donald Trump signed a bill mandating the Justice Department to release all files related to Jeffrey Epstein within 30 days. The directive requires the files to be provided in a searchable format. The move comes amid ongoing public interest in the Epstein case, and the release could shed new light on investigations. It remains to be seen how the department will proceed and what revelations may emerge.</p>
-<h2>Law and Politics: Spanish Attorney General Convicted</h2>
-<p>Spain’s attorney general, Álvaro García Ortiz, has been convicted in a controversial case involving leaked information. As a result, he is barred from his position for two years and must pay €10,000 in compensation. This verdict underscores the legal and political ramifications surrounding the handling of sensitive information in Spain’s judiciary.</p>
-<h2>Social Unrest in the US: Immigration Crackdown in Charlotte</h2>
-<p>Authorities arrested more than 250 people in Charlotte during an intensified immigration enforcement operation. Local Democratic leaders criticized the actions, accusing border agents of creating fear within the community. The arrest surge reflects the broader national debate over immigration policies and their impacts on local populations, with potential implications for law enforcement and community relations.</p>
-<h2>Global Environment: Fire Disrupts UN Climate Talks in Brazil</h2>
-<p>Thousands attending COP30, the UN climate summit in Brazil, faced an unexpected disruption when a fire broke out at the venue, necessitating evacuation. The incident interrupted ongoing discussions vital to global climate policy and cooperation. Organizers and delegates will need to manage this setback as talks continue to address urgent environmental challenges.</p>
 
-<hr />
-<h2>Sources &amp; Dates</h2>
-<ul>
-<li><a href="https://www.bbc.com/news/articles/cly1ypqlle0o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Zelensky to speak to Trump after US proposes Russia-Ukraine peace plan</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c93x3er4l9zo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Bush lauds Dick Cheney as a 'thinker and listener' at funeral</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/ce9d9p5jrjgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">COP30 climate talks evacuated after fire breaks out</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cly2y40lj5go?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Trump signs bill ordering US justice department to release Epstein files</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/ckgzge16vkdo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">More than 250 arrested in Charlotte as US immigration crackdown escalates</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cly4ypj92j9o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Spain's attorney general convicted in controversial leak case</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c62e27j69q9o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Israeli strikes across Gaza kill 25 Palestinians, health ministry says</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cj3z38e6v45o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Nigerian separatist leader sentenced to life for terrorism</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c2kpkq90ygno?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Paris court blocks auction of earliest-known calculator</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c70901djjw8o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Alleged mastermind behind Mexican mayor's murder arrested</a> <span class="source-date">(2025-11-20)</span></li>
-</ul>
-</div>
-<h2>Ukraine Peace Plan Developments</h2>
-<p>The United States has proposed a new peace plan for the Russia-Ukraine conflict, reportedly drafted in cooperation with Russian officials but without Ukraine's involvement. Ukrainian President Volodymyr Zelensky is set to speak with former US President Donald Trump about the plan. This development is significant because it could influence ongoing efforts to resolve the war, but Ukraine's exclusion from drafting raises questions about the plan's acceptance and viability.</p>
-<h2>US Justice Department to Release Epstein Files</h2>
-<p>President Trump has signed a bill requiring the US Justice Department to release all files related to Jeffrey Epstein within 30 days. The files must be made available in a searchable format. This move follows ongoing public interest in Epstein's case and could shed further light on investigations related to his activities and associates.</p>
-<h2>Evacuation at COP30 Climate Talks in Brazil</h2>
-<p>The UN climate conference, COP30, currently underway in Brazil, was temporarily evacuated after a fire broke out on site. Thousands of attendees were present for the talks aimed at addressing global climate challenges. The interruption could affect the schedule or negotiations, which are closely watched as countries seek to strengthen climate action.</p>
-<h2>Arrests in Charlotte Amid Immigration Crackdown</h2>
-<p>More than 250 people have been arrested in Charlotte as part of an intensified US immigration enforcement effort. Democratic city leaders have criticized the actions, saying that border agents are "stoking fear" within the community. This escalation highlights ongoing tensions over immigration policy and enforcement in various US cities.</p>
-<h2>International Legal and Security News</h2>
-<p>- Spain’s attorney general, Álvaro García Ortiz, has been convicted in a controversial leak case. He received a two-year ban from his post and must pay €10,000 in compensation, marking a significant event in Spanish legal affairs.</p>
-<p>- Nigerian separatist leader Nnamdi Kanu was sentenced to life in prison after being found guilty of inciting violence related to his campaign for a separate state in southeastern Nigeria. This ruling could impact political stability in the region.</p>
-<p>- Israeli military strikes in Gaza resulted in the deaths of 25 Palestinians. The strikes targeted Hamas after gunmen fired on Israeli soldiers, violating a five-week-old ceasefire. This incident may affect the fragile calm in the region.</p>
-<p>- In Mexico, authorities arrested the alleged mastermind behind the murder of Uruapan mayor Carlos Manzo, whose killing during a Day of the Dead ceremony led to widespread protests. The arrest could influence local security dynamics and public trust.</p>
-<h2>Cultural Heritage Protection</h2>
-<p>A Paris court has blocked the export of La Pascaline, a 400-year-old calculating machine considered the earliest-known calculator. The decision preserves the artifact within France, safeguarding an important piece of technological history.</p>
+    .site-header span strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
 
-<hr />
-<h2>Sources &amp; Dates</h2>
-<ul>
-<li><a href="https://www.bbc.com/news/articles/cly1ypqlle0o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Zelensky to speak to Trump after US proposes Russia-Ukraine peace plan</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c93x3er4l9zo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Bush lauds Dick Cheney as a 'thinker and listener' at funeral</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/ce9d9p5jrjgo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">COP30 climate talks evacuated after fire breaks out</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cly2y40lj5go?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Trump signs bill ordering US justice department to release Epstein files</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/ckgzge16vkdo?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">More than 250 arrested in Charlotte as US immigration crackdown escalates</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cly4ypj92j9o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Spain's attorney general convicted in controversial leak case</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c62e27j69q9o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Israeli strikes across Gaza kill 25 Palestinians, health ministry says</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/cj3z38e6v45o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Nigerian separatist leader sentenced to life for terrorism</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c2kpkq90ygno?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Paris court blocks auction of earliest-known calculator</a> <span class="source-date">(2025-11-20)</span></li>
-<li><a href="https://www.bbc.com/news/articles/c70901djjw8o?at_medium=RSS&at_campaign=rss" target="_blank" rel="noopener noreferrer">Alleged mastermind behind Mexican mayor's murder arrested</a> <span class="source-date">(2025-11-20)</span></li>
-</ul>
-</div>
-</body>
-</html>
+    .news-card {
+      background: linear-gradient(135deg, var(--card), var(--bg-soft));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: var(--shadow-soft);
+      padding: 1.75rem 1.75rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .news-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.13), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.10), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .news-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.2);
+    }
+
+    .tagline {
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .article-date {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+
+    #article p {
+      margin: 0 0 0.9rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 650;
+      margin: 1.4rem 0 0.4rem;
+      color: #f9fafb;
+      letter-spacing: 0.03em;
+      text-transform: none;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(148, 163, 184, 0.28);
+      margin: 1.5rem 0 1rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    #article a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    #article a:hover {
+      text-decoration: underline;
+    }
+
+    .source-date {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      margin-top: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .pill span {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .news-card {
+        padding:
