@@ -355,5 +355,25 @@
       </aside>
     </div>
   </div>
+  <script>
+  (function () {
+    function setUpdatedDate() {
+      var span = document.getElementById("updated-date");
+      if (!span) return;
+
+      var ts = span.getAttribute("data-ts");
+      if (!ts) return;
+
+      var d = new Date(ts);
+      if (isNaN(d.getTime())) return;
+
+      // Show only the local date, in the viewer's timezone
+      span.textContent = d.toLocaleDateString();
+    }
+
+    setUpdatedDate();
+  })();
+</script>
+
 </body>
 </html>
