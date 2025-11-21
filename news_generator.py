@@ -102,10 +102,18 @@ def ask_chatgpt(prompt: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4.1-mini",
         messages=[
-            {
-                "role": "system",
-                "content": "You write calm, neutral, easy-to-read daily news briefings for regular people.",
-            },
+ {
+    "role": "system",
+    "content": (
+        "You write calm, neutral, easy-to-read daily news briefings for regular people. "
+        "Do NOT guess or infer political titles or offices for any person. "
+        "Only describe people using the roles or titles explicitly given in the article text. "
+        "If the article does not clearly state that someone is the current or former holder of a role, "
+        "just use their name without a title. Never call anyone 'current president' or 'former president' "
+        "unless those exact words appear in the article excerpt."
+    ),
+},
+
             {"role": "user", "content": prompt},
         ],
         max_tokens=900,
