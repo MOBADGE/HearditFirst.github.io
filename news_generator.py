@@ -391,6 +391,12 @@ def update_archive_list_on_index():
 
 
 def main():
+    # Use a local-ish date for archives
+    try:
+        today = get_local_date()
+    except NameError:
+        today = datetime.datetime.now(datetime.timezone.utc).date()
+
     # Fetch news items from RSS feeds
     items = fetch_rss_items()
     if not items:
@@ -461,7 +467,7 @@ def main():
 
     # 1) Write today's archive page, if the helper exists
     try:
-        write_archive_page(full_html)
+        write_archive_page(full_html, today)
     except NameError:
         pass
 
