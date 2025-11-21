@@ -406,7 +406,7 @@ def main():
     full_html = summary_html + "\n<hr />\n" + sources_html
 
     # 1) Write today's archive page
-    write_archive_page(full_html)
+    write_archive_page(full_html, today)
 
     # 2) Update the main index article
     update_index_html(full_html)
