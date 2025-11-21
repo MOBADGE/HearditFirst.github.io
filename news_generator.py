@@ -395,7 +395,7 @@ def main():
     )
 
     summary_html = ""
-        current_section_title = None  # track which section we're in
+    current_section_title = None  # track which section we're in
 
     for block in summary.split("\n\n"):
         text = block.strip()
