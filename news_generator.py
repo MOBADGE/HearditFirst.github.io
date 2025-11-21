@@ -137,7 +137,8 @@ def build_sources_html(items):
             f'<span class="source-date">({date_str})</span></li>'
         )
 
-    html = "<h2>Sources &amp; Dates</h2>\n<ul>\n" + "\n".join(lines) + "\n</ul>"
+    html = '<h2 class="sources-title">Sources &amp; Dates</h2>\n<ul>\n' + "\n".join(lines) + "\n</ul>"
+
     return html
     
 
