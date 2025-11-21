@@ -147,16 +147,31 @@ def build_sources_html(items):
 
 def sanitize_political_titles(text: str) -> str:
     """
-    Neutralize specific political titles that may be outdated or incorrect.
-    This keeps your overall style and structure intact.
+    Normalize references to U.S. Presidents so they always appear as 'President <Name>'.
+    Removes 'former' and 'current' prefixes without altering other titles.
     """
-    patterns = [
-        r"\bformer [Pp]resident Donald Trump\b",
-        r"\bcurrent [Pp]resident Donald Trump\b",
-    ]
-    for pattern in patterns:
-        text = re.sub(pattern, "Donald Trump", text)
+
+    corrections = {
+        r"\bformer president donald trump\b": "President Donald Trump",
+        r"\bformer President Donald Trump\b": "President Donald Trump",
+        r"\bcurrent president donald trump\b": "President Donald Trump",
+        r"\bcurrent President Donald Trump\b": "President Donald Trump",
+
+        r"\bformer president joe biden\b": "President Joe Biden",
+        r"\bformer President Joe Biden\b": "President Joe Biden",
+        r"\bcurrent president joe biden\b": "President Joe Biden",
+        r"\bcurrent President Joe Biden\b": "President Joe Biden",
+
+        r"\bformer president barack obama\b": "President Barack Obama",
+        r"\bformer President Barack Obama\b": "President Barack Obama",
+    }
+
+    # Apply case-insensitive regex replacements
+    for pattern, replacement in corrections.items():
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+
     return text
+
 
 
 
