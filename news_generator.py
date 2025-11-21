@@ -157,18 +157,21 @@ def sanitize_political_titles(text: str) -> str:
 
 
 def update_index_html(article_html: str):
-    """Replace the content inside the <div id="article">...</div> block."""
+    """
+    Replace the content inside the <div id="article">...</div> block.
+    If no such div exists, create one before </body>.
+    """
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    # Store the update moment as a UTC timestamp; the browser will localize it
+    # Store the update moment as a UTC timestamp; browser converts to local date
     updated_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
-
 
     marker_id = 'id="article"'
     pos_id = html.find(marker_id)
 
     if pos_id != -1:
+        # Found existing <div id="article">
         start = html.rfind("<div", 0, pos_id)
         if start == -1:
             raise RuntimeError("Could not find opening <div> for id=\"article\"")
@@ -184,23 +187,28 @@ def update_index_html(article_html: str):
         before = html[: start_tag_end + 1]
         after = html[end:]
 
-     inner_html = (
-        '\n<p class="article-date">Updated: '
-        f'<span id="updated-date" data-ts="{updated_ts}"></span>'
-        '</p>\n'
-        f'{article_html}\n'
-     )
-
+        inner_html = (
+            '\n<p class="article-date">Updated: '
+            f'<span id="updated-date" data-ts="{updated_ts}"></span>'
+            '</p>\n'
+            f'{article_html}\n'
+        )
 
         new_html = before + inner_html + after
+
     else:
-        print('Warning: id="article" not found; injecting new article block.')
+        # Fallback: no <div id="article"> found
+        print('Warning: id="article" not found; injecting a new article block.')
+
         article_block = (
-            f'\n<div id="article">\n'
-            f'  <p class="article-date">Updated: {today_str}</p>\n'
+            '\n<div id="article">\n'
+            '  <p class="article-date">Updated: '
+            f'<span id="updated-date" data-ts="{updated_ts}"></span>'
+            '</p>\n'
             f'  {article_html}\n'
-            f'</div>\n'
+            '</div>\n'
         )
+
         body_close = html.lower().rfind("</body>")
         if body_close != -1:
             new_html = html[:body_close] + article_block + html[body_close:]
