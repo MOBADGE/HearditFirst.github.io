@@ -414,9 +414,9 @@ def main():
             and "other notable events" in current_section_title.strip().lower()
         )
 
-        if in_other_notable:
-            # Split this block into separate paragraphs per sentence
-            sentences = [s.strip() for s in text.split(". ") if s.strip()]
+    if in_other_notable:
+         # Split this block into separate paragraphs per sentence
+             sentences = [s.strip() for s in text.split(". ") if s.strip()]
             for s in sentences:
                 if not s.endswith("."):
                     s += "."
