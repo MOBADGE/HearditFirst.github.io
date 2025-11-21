@@ -130,7 +130,7 @@ def update_index_html(article_html: str):
     today = datetime.date.today().strftime("%B %d, %Y")
 
     # Be flexible: match any <div id="article"...> (with or without extra spaces/attrs)
-    marker_open = '<div id="article"'
+    marker_open = '<div id="article">'
     start = html.find(marker_open)
     if start == -1:
         raise RuntimeError('index.html does not contain a <div id="article"> element')
