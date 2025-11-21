@@ -378,7 +378,7 @@ def main():
     if not items:
         print("No news items fetched. Exiting.")
         fallback_html = "<p>We couldn't fetch any news right now. Please check back later.</p>"
-        update_index_html(fallback_html, today)
+        update_index_html(fallback_html)
         update_archive_list_on_index()
         return
 
@@ -406,10 +406,10 @@ def main():
     full_html = summary_html + "\n<hr />\n" + sources_html
 
     # 1) Write today's archive page
-    write_archive_page(full_html, today)
+    write_archive_page(full_html)
 
     # 2) Update the main index article
-    update_index_html(full_html, today)
+    update_index_html(full_html)
 
     # 3) Refresh the archive list sidebar
     update_archive_list_on_index()
