@@ -156,15 +156,14 @@ def sanitize_political_titles(text: str) -> str:
 
 
 
-def update_index_html(article_html: str, today: datetime.date):
-    """
-    Replace the content inside the <div id="article">...</div> block.
-    If no such div exists, create one before </body>.
-    """
+def update_index_html(article_html: str):
+    """Replace the content inside the <div id="article">...</div> block."""
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    today_str = today.strftime("%B %d, %Y")
+    # Store the update moment as a UTC timestamp; the browser will localize it
+    updated_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
 
     marker_id = 'id="article"'
     pos_id = html.find(marker_id)
@@ -185,10 +184,13 @@ def update_index_html(article_html: str, today: datetime.date):
         before = html[: start_tag_end + 1]
         after = html[end:]
 
-        inner_html = (
-            f'\n<p class="article-date">Updated: {today_str}</p>\n'
-            f'{article_html}\n'
-        )
+     inner_html = (
+        '\n<p class="article-date">Updated: '
+        f'<span id="updated-date" data-ts="{updated_ts}"></span>'
+        '</p>\n'
+        f'{article_html}\n'
+    )
+
 
         new_html = before + inner_html + after
     else:
