@@ -85,11 +85,14 @@ def build_prompt(items):
 
     Using ONLY the information in the articles below, write a clear, neutral summary of today's most important news. Do not add facts that aren't mentioned.
 
-    Requirements:
+     Requirements:
     - 3–6 short sections with headers (e.g., "Global Politics", "Economy", "Technology").
+    - IMPORTANT: Each section MUST start with a markdown heading of the form `### Section Title` on its own line,
+      followed by one or more paragraphs, with blank lines between sections.
     - Plain language, easy to skim.
     - 400–600 words.
     - No sensationalism; focus on what happened, why it matters, and what might come next.
+
 
     Here are the articles:
 
