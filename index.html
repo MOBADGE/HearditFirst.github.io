@@ -147,7 +147,8 @@
       line-height: 1.7;
     }
 
-    #article h2 {
+/* Story section headings only (NOT the sources header) */
+    #article h2:not(.sources-title) {
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
@@ -166,11 +167,24 @@
       letter-spacing: 0.01em;
     }
 
-      #article h2::before {
+  /* Icon only for story headings */
+    #article h2:not(.sources-title)::before {
       content: "📰";
       font-size: 1.1rem;
       display: inline-block;
     }
+
+  /* Simple style for the Sources header */
+    #article h2.sources-title {
+      font-size: 1.0rem;
+      font-weight: 600;
+      margin-top: 1.6rem;
+      margin-bottom: 0.4rem;
+      color: #e5e7eb;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
 
 
 
