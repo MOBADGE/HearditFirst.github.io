@@ -123,34 +123,38 @@ def ask_chatgpt(prompt: str) -> str:
 
 
 def update_index_html(article_html: str):
-    """Replace the content inside the <div id="article">...</div> block."""
+    """Replace the content inside the <div id="article">...</div> block, regardless of formatting."""
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
     today = datetime.date.today().strftime("%B %d, %Y")
 
-    # Be flexible: match any <div id="article"...> (with or without extra spaces/attrs)
-    marker_open = '<div id="article">'
-    start = html.find(marker_open)
-    if start == -1:
-        raise RuntimeError('index.html does not contain a <div id="article"> element')
+    # Look for id="article" ANYWHERE inside the tag
+    marker_id = 'id="article"'
+    pos_id = html.find(marker_id)
+    if pos_id == -1:
+        raise RuntimeError('index.html does not contain an element with id="article"')
 
-    # Find the end of the opening tag: the first '>' after the id="article"
+    # Find the start of the containing <div ...> tag
+    start = html.rfind("<div", 0, pos_id)
+    if start == -1:
+        raise RuntimeError("Could not find opening <div> tag for id=\"article\"")
+
+    # Find the end of the opening <div...> tag
     start_tag_end = html.find(">", start)
     if start_tag_end == -1:
         raise RuntimeError("Could not find the end of the <div id=\"article\"> tag")
 
-    # Find the closing </div> that matches this article section
+    # Find the closing </div>
     end = html.find("</div>", start_tag_end)
     if end == -1:
         raise RuntimeError("Could not find closing </div> for <div id=\"article\">")
 
-    # Everything before the inner content
-    before = html[: start_tag_end + 1]  # includes the '>'
-    # Everything after the closing </div>
+    # Content before and after
+    before = html[: start_tag_end + 1]
     after = html[end:]
 
-    # What we want inside the article div
+    # New inner HTML
     inner_html = (
         f'\n<p class="article-date">Updated: {today}</p>\n'
         f'{article_html}\n'
@@ -160,6 +164,8 @@ def update_index_html(article_html: str):
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(new_html)
+
+
 
 
 
