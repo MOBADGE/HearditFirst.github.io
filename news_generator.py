@@ -403,6 +403,8 @@ def main():
 
     prompt = build_prompt(items)
     summary = ask_chatgpt(prompt)
+    summary = sanitize_political_titles(summary)
+
 
     summary = "\n".join(
         line for line in summary.split("\n")
@@ -430,12 +432,12 @@ def main():
         )
 
     if in_other_notable:
-         # Split this block into separate paragraphs per sentence
-             sentences = [s.strip() for s in text.split(". ") if s.strip()]
-                for s in sentences:
-                if not s.endswith("."):
-                    s += "."
-                summary_html += f"<p>{s}</p>\n"
+        # Split this block into separate paragraphs per sentence
+        sentences = [s.strip() for s in text.split(". ") if s.strip()]
+        for s in sentences:
+            if not s.endswith("."):
+                s += "."
+            summary_html += f"<p>{s}</p>\n"
         else:
             # All other sections: leave the paragraph as-is
             summary_html += f"<p>{text}</p>\n"
