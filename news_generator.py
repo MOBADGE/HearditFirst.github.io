@@ -4,6 +4,7 @@ import textwrap
 import requests
 import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
+import re
 
 from openai import OpenAI
 
@@ -138,6 +139,21 @@ def build_sources_html(items):
 
     html = "<h2>Sources &amp; Dates</h2>\n<ul>\n" + "\n".join(lines) + "\n</ul>"
     return html
+    
+
+def sanitize_political_titles(text: str) -> str:
+    """
+    Neutralize specific political titles that may be outdated or incorrect.
+    This keeps your overall style and structure intact.
+    """
+    patterns = [
+        r"\bformer [Pp]resident Donald Trump\b",
+        r"\bcurrent [Pp]resident Donald Trump\b",
+    ]
+    for pattern in patterns:
+        text = re.sub(pattern, "Donald Trump", text)
+    return text
+
 
 
 def update_index_html(article_html: str, today: datetime.date):
