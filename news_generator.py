@@ -417,7 +417,7 @@ def main():
     if in_other_notable:
          # Split this block into separate paragraphs per sentence
              sentences = [s.strip() for s in text.split(". ") if s.strip()]
-            for s in sentences:
+                for s in sentences:
                 if not s.endswith("."):
                     s += "."
                 summary_html += f"<p>{s}</p>\n"
