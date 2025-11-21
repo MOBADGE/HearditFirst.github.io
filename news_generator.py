@@ -46,6 +46,7 @@ def fetch_rss_items():
                         }
                     )
         except Exception as e:
+            # Network/DNS issues on GitHub runners are common; just log and continue.
             print(f"Error fetching {feed_url}: {e}")
 
     # Basic dedupe by title
@@ -122,54 +123,6 @@ def ask_chatgpt(prompt: str) -> str:
     return response.choices[0].message.content.strip()
 
 
-def update_index_html(article_html: str):
-    """Replace the content inside the <div id="article">...</div> block, regardless of formatting."""
-    with open("index.html", "r", encoding="utf-8") as f:
-        html = f.read()
-
-    today = datetime.date.today().strftime("%B %d, %Y")
-
-    # Look for id="article" ANYWHERE inside the tag
-    marker_id = 'id="article"'
-    pos_id = html.find(marker_id)
-    if pos_id == -1:
-        raise RuntimeError('index.html does not contain an element with id="article"')
-
-    # Find the start of the containing <div ...> tag
-    start = html.rfind("<div", 0, pos_id)
-    if start == -1:
-        raise RuntimeError("Could not find opening <div> tag for id=\"article\"")
-
-    # Find the end of the opening <div...> tag
-    start_tag_end = html.find(">", start)
-    if start_tag_end == -1:
-        raise RuntimeError("Could not find the end of the <div id=\"article\"> tag")
-
-    # Find the closing </div>
-    end = html.find("</div>", start_tag_end)
-    if end == -1:
-        raise RuntimeError("Could not find closing </div> for <div id=\"article\">")
-
-    # Content before and after
-    before = html[: start_tag_end + 1]
-    after = html[end:]
-
-    # New inner HTML
-    inner_html = (
-        f'\n<p class="article-date">Updated: {today}</p>\n'
-        f'{article_html}\n'
-    )
-
-    new_html = before + inner_html + after
-
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(new_html)
-
-
-
-
-
-
 def build_sources_html(items):
     """Build an HTML list of sources with their publication dates."""
     if not items:
@@ -180,7 +133,6 @@ def build_sources_html(items):
         date_str = format_pub_date(it.get("pub_date_raw", ""))
         title = it["title"]
         link = it["link"]
-        # Basic HTML-escaped-ish output (these fields are from RSS so should be safe enough here)
         lines.append(
             f'<li><a href="{link}" target="_blank" rel="noopener noreferrer">{title}</a> '
             f'<span class="source-date">({date_str})</span></li>'
@@ -190,10 +142,69 @@ def build_sources_html(items):
     return html
 
 
+def update_index_html(article_html: str):
+    """
+    Replace the content inside the <div id="article">...</div> block.
+    If no such div exists, create one before </body>.
+    """
+    with open("index.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    today = datetime.date.today().strftime("%B %d, %Y")
+
+    marker_id = 'id="article"'
+    pos_id = html.find(marker_id)
+
+    if pos_id != -1:
+        # Found an element with id="article"
+        start = html.rfind("<div", 0, pos_id)
+        if start == -1:
+            raise RuntimeError("Could not find opening <div> for id=\"article\"")
+
+        start_tag_end = html.find(">", start)
+        if start_tag_end == -1:
+            raise RuntimeError("Could not find end of <div ...> tag for id=\"article\"")
+
+        end = html.find("</div>", start_tag_end)
+        if end == -1:
+            raise RuntimeError("Could not find closing </div> for <div id=\"article\">")
+
+        before = html[: start_tag_end + 1]
+        after = html[end:]
+
+        inner_html = (
+            f'\n<p class="article-date">Updated: {today}</p>\n'
+            f'{article_html}\n'
+        )
+
+        new_html = before + inner_html + after
+    else:
+        # Fallback: no article div found; inject one before </body>.
+        print('Warning: id="article" not found; injecting new article block.')
+        article_block = (
+            f'\n<div id="article">\n'
+            f'  <p class="article-date">Updated: {today}</p>\n'
+            f'  {article_html}\n'
+            f'</div>\n'
+        )
+
+        body_close = html.lower().rfind("</body>")
+        if body_close != -1:
+            new_html = html[:body_close] + article_block + html[body_close:]
+        else:
+            new_html = html + article_block
+
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(new_html)
+
+
 def main():
     items = fetch_rss_items()
     if not items:
         print("No news items fetched. Exiting.")
+        # Still update the page with a friendly message
+        fallback_html = "<p>We couldn't fetch any news right now. Please check back later.</p>"
+        update_index_html(fallback_html)
         return
 
     prompt = build_prompt(items)
@@ -229,6 +240,6 @@ def main():
     print("index.html updated with new daily brief and sources.")
 
 
-
 if __name__ == "__main__":
     main()
+
