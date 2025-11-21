@@ -8,17 +8,14 @@ from email.utils import parsedate_to_datetime
 from openai import OpenAI
 
 # --- Config ---
-# You can change these later if you want different news sources
 RSS_FEEDS = [
     "http://feeds.bbci.co.uk/news/world/rss.xml",
     "http://feeds.reuters.com/reuters/topNews",
     "https://feeds.apnews.com/apf-topnews",
 ]
 
-# Max number of articles to include in the summary
 MAX_ARTICLES = 10
 
-# OpenAI client – reads the key from the environment variable we set as a GitHub secret
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
@@ -46,10 +43,8 @@ def fetch_rss_items():
                         }
                     )
         except Exception as e:
-            # Network/DNS issues on GitHub runners are common; just log and continue.
             print(f"Error fetching {feed_url}: {e}")
 
-    # Basic dedupe by title
     seen = set()
     unique = []
     for it in items:
@@ -66,10 +61,8 @@ def format_pub_date(raw: str) -> str:
         return "Unknown date"
     try:
         dt = parsedate_to_datetime(raw)
-        # Convert to date only
         return dt.date().strftime("%Y-%m-%d")
     except Exception:
-        # If parsing fails, just return the raw string
         return raw
 
 
@@ -109,19 +102,11 @@ def ask_chatgpt(prompt: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4.1-mini",
         messages=[
-            
-    {
-        "role": "system",
-        "content": (
-            "You write calm, neutral, easy-to-read daily news briefings for regular people. "
-            "Do NOT guess or infer political titles or offices for any person. "
-            "Only describe people using the roles or titles explicitly given in the article text. "
-            "If the article does not clearly state that someone is the current or former holder of a role, "
-            "just use their name without a title. Never call anyone 'current president' or 'former president' "
-            "unless those exact words appear in the article excerpt."
-        ),
-},
-
+            {
+                "role": "system",
+                "content": "You write calm, neutral, easy-to-read daily news briefings for regular people.",
+            },
+            {"role": "user", "content": prompt},
         ],
         max_tokens=900,
     )
@@ -147,7 +132,7 @@ def build_sources_html(items):
     return html
 
 
-def update_index_html(article_html: str):
+def update_index_html(article_html: str, today: datetime.date):
     """
     Replace the content inside the <div id="article">...</div> block.
     If no such div exists, create one before </body>.
@@ -155,13 +140,12 @@ def update_index_html(article_html: str):
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
-    today = datetime.date.today().strftime("%B %d, %Y")
+    today_str = today.strftime("%B %d, %Y")
 
     marker_id = 'id="article"'
     pos_id = html.find(marker_id)
 
     if pos_id != -1:
-        # Found an element with id="article"
         start = html.rfind("<div", 0, pos_id)
         if start == -1:
             raise RuntimeError("Could not find opening <div> for id=\"article\"")
@@ -178,21 +162,19 @@ def update_index_html(article_html: str):
         after = html[end:]
 
         inner_html = (
-            f'\n<p class="article-date">Updated: {today}</p>\n'
+            f'\n<p class="article-date">Updated: {today_str}</p>\n'
             f'{article_html}\n'
         )
 
         new_html = before + inner_html + after
     else:
-        # Fallback: no article div found; inject one before </body>.
         print('Warning: id="article" not found; injecting new article block.')
         article_block = (
             f'\n<div id="article">\n'
-            f'  <p class="article-date">Updated: {today}</p>\n'
+            f'  <p class="article-date">Updated: {today_str}</p>\n'
             f'  {article_html}\n'
             f'</div>\n'
         )
-
         body_close = html.lower().rfind("</body>")
         if body_close != -1:
             new_html = html[:body_close] + article_block + html[body_close:]
@@ -203,48 +185,203 @@ def update_index_html(article_html: str):
         f.write(new_html)
 
 
+def write_archive_page(article_html: str, today: datetime.date):
+    """Write/overwrite a daily archive page under archives/YYYY-MM-DD.html."""
+    date_slug = today.strftime("%Y-%m-%d")
+    display_date = today.strftime("%B %d, %Y")
+
+    archive_dir = "archives"
+    os.makedirs(archive_dir, exist_ok=True)
+
+    path = os.path.join(archive_dir, f"{date_slug}.html")
+
+    page_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Heard It First – {display_date} Digest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {{
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 1.5rem;
+    }}
+    .page {{
+      max-width: 800px;
+      margin: 0 auto;
+    }}
+    h1 {{
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 1.4rem;
+    }}
+    .date {{
+      margin-bottom: 1rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }}
+    h2 {{
+      font-size: 1.1rem;
+      margin: 1.3rem 0 0.4rem;
+    }}
+    p {{
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }}
+    ul {{
+      padding-left: 1.2rem;
+    }}
+    li {{
+      margin-bottom: 0.4rem;
+    }}
+    a {{
+      color: #38bdf8;
+      text-decoration: none;
+    }}
+    a:hover {{
+      text-decoration: underline;
+    }}
+    .back {{
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Heard It First – Daily Digest</h1>
+    <div class="date">{display_date}</div>
+    {article_html}
+    <p class="back"><a href="../index.html">← Back to latest digest</a></p>
+  </div>
+</body>
+</html>
+"""
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(page_html)
+
+
+def build_archive_list_items():
+    """Scan archives/ and build <li> links sorted by date desc."""
+    archive_dir = "archives"
+    if not os.path.isdir(archive_dir):
+        return []
+
+    entries = []
+    for name in os.listdir(archive_dir):
+        if not name.endswith(".html"):
+            continue
+        slug = name[:-5]  # strip ".html"
+        try:
+            dt = datetime.datetime.strptime(slug, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        display = dt.strftime("%B %d, %Y")
+        url = f"archives/{name}"
+        entries.append((dt, display, url))
+
+    entries.sort(reverse=True)
+    items = [
+        f'<li><a href="{url}">{display}</a></li>'
+        for dt, display, url in entries
+    ]
+    return items
+
+
+def update_archive_list_on_index():
+    """Update the <ul id="archive-list">...</ul> block in index.html."""
+    with open("index.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    marker_id = 'id="archive-list"'
+    pos_id = html.find(marker_id)
+    if pos_id == -1:
+        print('No archive-list element found; skipping archive list update.')
+        return
+
+    start = html.rfind("<ul", 0, pos_id)
+    if start == -1:
+        print("Could not find <ul> for archive-list; skipping.")
+        return
+
+    start_tag_end = html.find(">", start)
+    if start_tag_end == -1:
+        print("Could not find end of <ul> tag for archive-list; skipping.")
+        return
+
+    end = html.find("</ul>", start_tag_end)
+    if end == -1:
+        print("Could not find closing </ul> for archive-list; skipping.")
+        return
+
+    before = html[: start_tag_end + 1]
+    after = html[end:]
+
+    items = build_archive_list_items()
+
+    if not items:
+        inner = '\n<li class="archive-empty">No archives yet.</li>\n'
+    else:
+        inner = "\n" + "\n".join(items) + "\n"
+
+    new_html = before + inner + after
+
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(new_html)
+
+
 def main():
+    today = datetime.date.today()
+
     items = fetch_rss_items()
     if not items:
         print("No news items fetched. Exiting.")
-        # Still update the page with a friendly message
         fallback_html = "<p>We couldn't fetch any news right now. Please check back later.</p>"
-        update_index_html(fallback_html)
+        update_index_html(fallback_html, today)
+        update_archive_list_on_index()
         return
 
     prompt = build_prompt(items)
     summary = ask_chatgpt(prompt)
 
-    # Remove any extra "Updated:" lines the model may have added
     summary = "\n".join(
         line for line in summary.split("\n")
         if not line.strip().startswith("Updated:")
     )
 
-    # Convert the summary into HTML: H2 for markdown headers, P for regular text
     summary_html = ""
     for block in summary.split("\n\n"):
         text = block.strip()
         if not text:
             continue
 
-        # If ChatGPT produced a markdown-style header (### Title)
         if text.startswith("###"):
             clean_title = text.lstrip("#").strip()
             summary_html += f"<h2>{clean_title}</h2>\n"
         else:
             summary_html += f"<p>{text}</p>\n"
 
-    # Build sources block with dates
     sources_html = build_sources_html(items)
-
-    # Combine summary + horizontal rule + sources
     full_html = summary_html + "\n<hr />\n" + sources_html
 
-    update_index_html(full_html)
-    print("index.html updated with new daily brief and sources.")
+    # 1) Write today's archive page
+    write_archive_page(full_html, today)
+
+    # 2) Update the main index article
+    update_index_html(full_html, today)
+
+    # 3) Refresh the archive list sidebar
+    update_archive_list_on_index()
+
+    print("index.html and archives updated with new daily brief and sources.")
 
 
 if __name__ == "__main__":
     main()
-
