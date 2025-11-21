@@ -395,22 +395,36 @@ def main():
     )
 
     summary_html = ""
+        current_section_title = None  # track which section we're in
+
     for block in summary.split("\n\n"):
         text = block.strip()
-        if not text:
-            continue
+    if not text:
+        continue
 
-        if text.startswith("###"):
-            clean_title = text.lstrip("#").strip()
-            summary_html += f"<h2>{clean_title}</h2>\n"
-        else:
+    # If ChatGPT produced a markdown-style header (### Title)
+    if text.startswith("###"):
+        clean_title = text.lstrip("#").strip()
+        current_section_title = clean_title  # remember which section we're in
+        summary_html += f"<h2>{clean_title}</h2>\n"
+    else:
+        # Check if we're in the "Other notable events" section
+         in_other_notable = (
+            current_section_title
+            and "other notable events" in current_section_title.strip().lower()
+        )
+
+        if in_other_notable:
+            # Split this block into separate paragraphs per sentence
             sentences = [s.strip() for s in text.split(". ") if s.strip()]
-            summary_html += "<ul>"
             for s in sentences:
                 if not s.endswith("."):
                     s += "."
-                summary_html += f"<li>{s}</li>"
-            summary_html += "</ul>"
+                summary_html += f"<p>{s}</p>\n"
+        else:
+            # All other sections: leave the paragraph as-is
+            summary_html += f"<p>{text}</p>\n"
+
 
 
     sources_html = build_sources_html(items)
