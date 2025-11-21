@@ -189,7 +189,7 @@ def update_index_html(article_html: str):
         f'<span id="updated-date" data-ts="{updated_ts}"></span>'
         '</p>\n'
         f'{article_html}\n'
-    )
+     )
 
 
         new_html = before + inner_html + after
