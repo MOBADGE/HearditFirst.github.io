@@ -123,33 +123,44 @@ def ask_chatgpt(prompt: str) -> str:
 
 
 def update_index_html(article_html: str):
-    """Replace the article content inside <div id="article">...</div>."""
+    """Replace the content inside the <div id="article">...</div> block."""
     with open("index.html", "r", encoding="utf-8") as f:
         html = f.read()
 
     today = datetime.date.today().strftime("%B %d, %Y")
 
-    marker_start = '<div id="article">'
-    marker_end = "</div>"
+    # Be flexible: match any <div id="article"...> (with or without extra spaces/attrs)
+    marker_open = '<div id="article"'
+    start = html.find(marker_open)
+    if start == -1:
+        raise RuntimeError('index.html does not contain a <div id="article"> element')
 
-    if marker_start not in html:
-        raise RuntimeError('index.html does not contain <div id="article">')
+    # Find the end of the opening tag: the first '>' after the id="article"
+    start_tag_end = html.find(">", start)
+    if start_tag_end == -1:
+        raise RuntimeError("Could not find the end of the <div id=\"article\"> tag")
 
-    # Split around the article div
-    before, rest = html.split(marker_start, 1)
-    inside, after = rest.split(marker_end, 1)
+    # Find the closing </div> that matches this article section
+    end = html.find("</div>", start_tag_end)
+    if end == -1:
+        raise RuntimeError("Could not find closing </div> for <div id=\"article\">")
 
-    # Build new content INSIDE the article div
+    # Everything before the inner content
+    before = html[: start_tag_end + 1]  # includes the '>'
+    # Everything after the closing </div>
+    after = html[end:]
+
+    # What we want inside the article div
     inner_html = (
-        f'<p class="article-date">Updated: {today}</p>\n'
-        f'{article_html}'
+        f'\n<p class="article-date">Updated: {today}</p>\n'
+        f'{article_html}\n'
     )
 
-    # Assemble the full HTML
-    new_html = before + marker_start + "\n" + inner_html + "\n" + marker_end + after
+    new_html = before + inner_html + after
 
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(new_html)
+
 
 
 
