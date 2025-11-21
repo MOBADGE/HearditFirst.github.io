@@ -404,7 +404,14 @@ def main():
             clean_title = text.lstrip("#").strip()
             summary_html += f"<h2>{clean_title}</h2>\n"
         else:
-            summary_html += f"<p>{text}</p>\n"
+            sentences = [s.strip() for s in text.split(". ") if s.strip()]
+            summary_html += "<ul>"
+            for s in sentences:
+                if not s.endswith("."):
+                    s += "."
+                summary_html += f"<li>{s}</li>"
+            summary_html += "</ul>"
+
 
     sources_html = build_sources_html(items)
     full_html = summary_html + "\n<hr />\n" + sources_html
