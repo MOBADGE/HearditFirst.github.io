@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <div class="logo-container">
+    <img src="/favicon.png" alt="A Little Birdy Logo" class="site-logo">
+</div>
+
   <title>A Little Bird Told Me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
@@ -17,6 +21,30 @@
       --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.65);
       --radius-xl: 1.5rem;
     }
+    .logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+
+.site-logo {
+  width: 70px;       /* adjust as needed */
+  height: 70px;
+  border-radius: 50%; /* makes it circular */
+  box-shadow: 0 0 12px #38bdf8aa; /* teal glow */
+  background-color: #0f172a; /* subtle backdrop */
+  padding: 8px;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Optional pulsing glow animation */
+@keyframes glowPulse {
+  0%   { box-shadow: 0 0 12px #38bdf8aa; }
+  50%  { box-shadow: 0 0 20px #38bdf8ff; }
+  100% { box-shadow: 0 0 12px #38bdf8aa; }
+}
+
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="apple-touch-icon" href="/favicon.png" />
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
