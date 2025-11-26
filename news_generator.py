@@ -36,7 +36,9 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 def fetch_rss_items():
-    """Fetch top items from the RSS feeds, including publication dates."""
+    """Fetch top items from the RSS feeds, preferring today's stories."""
+    today = get_local_date()
+
     items = []
     for feed_url in RSS_FEEDS:
         try:
@@ -49,6 +51,15 @@ def fetch_rss_items():
                 link = item.findtext("link", default="").strip()
                 pub_date_raw = item.findtext("pubDate", default="").strip()
 
+                pub_date = None
+                if pub_date_raw:
+                    try:
+                        dt = parsedate_to_datetime(pub_date_raw)
+                        # normalize to date only
+                        pub_date = dt.date()
+                    except Exception:
+                        pub_date = None
+
                 if title:
                     items.append(
                         {
@@ -56,11 +67,13 @@ def fetch_rss_items():
                             "description": desc,
                             "link": link,
                             "pub_date_raw": pub_date_raw,
+                            "pub_date": pub_date,
                         }
                     )
         except Exception as e:
             print(f"Error fetching {feed_url}: {e}")
 
+    # Basic dedupe by title
     seen = set()
     unique = []
     for it in items:
@@ -68,7 +81,31 @@ def fetch_rss_items():
             seen.add(it["title"])
             unique.append(it)
 
+    # First preference: only today's articles
+    todays_items = [
+        it for it in unique
+        if it.get("pub_date") == today
+    ]
+
+    if todays_items:
+        print(f"Using {len(todays_items)} items from {today} only.")
+        return todays_items[:MAX_ARTICLES]
+
+    # Fallback: allow articles from yesterday as well, but not older
+    cutoff = today - datetime.timedelta(days=1)
+    recent_items = [
+        it for it in unique
+        if it.get("pub_date") is not None and it["pub_date"] >= cutoff
+    ]
+
+    if recent_items:
+        print(f"No pure-today items; using {len(recent_items)} items from last 2 days.")
+        return recent_items[:MAX_ARTICLES]
+
+    # Last resort: if pubDate is missing or parsing failed, fall back to the old behavior
+    print("No recent-dated items; falling back to first MAX_ARTICLES items.")
     return unique[:MAX_ARTICLES]
+
 
 
 def format_pub_date(raw: str) -> str:
