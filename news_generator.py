@@ -8,6 +8,21 @@ import re
 
 from openai import OpenAI
 
+def get_local_date() -> datetime.date:
+    """
+    Return 'today' in your local time, based on a UTC offset.
+    You can change LOCAL_UTC_OFFSET_HOURS in the environment if needed.
+    """
+    try:
+        offset_hours = int(os.environ.get("LOCAL_UTC_OFFSET_HOURS", "-6"))
+    except Exception:
+        offset_hours = 0
+
+    now_utc = datetime.datetime.now(datetime.timezone.utc)
+    local = now_utc + datetime.timedelta(hours=offset_hours)
+    return local.date()
+
+
 # --- Config ---
 RSS_FEEDS = [
     "http://feeds.bbci.co.uk/news/world/rss.xml",
