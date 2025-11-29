@@ -138,23 +138,29 @@ def update_tech_page(summary_html):
     if start == -1:
         raise RuntimeError("tech.html missing <div id='article'>")
 
+    # end of opening tag
     start_tag_end = html.find(">", start)
     end = html.find("</div>", start_tag_end)
 
     before = html[: start_tag_end + 1]
     after = html[end:]
 
-    new_content = (
-        f'\n<p class="article-date">Updated: {today}</p>\n'
-        f"{summary_html}\n"
+    # Build inner HTML *WITHOUT* using nested f-strings
+    inner_html = (
+        "\n<p class=\"article-date\">Updated: "
+        + today +
+        "</p>\n"
+        + summary_html +
+        "\n"
     )
 
-    new_html = before + new_content + after
+    new_html = before + inner_html + after
 
     with open("tech.html", "w", encoding="utf-8") as f:
         f.write(new_html)
 
     print("tech.html updated with new tech summary.")
+
 
 
 def main():
