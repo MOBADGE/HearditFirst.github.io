@@ -76,8 +76,24 @@ def build_prompt(items):
             f"   Link: {it['link']}"
         )
 
-    return textwrap.dedent(f"""
+    articles_block = "\n\n".join(bullets)
+
+    prompt = """
     Summarize today's most important TECHNOLOGY news into a clean, readable briefing.
+
+    Requirements:
+    - 3–6 sections with clear headers
+    - 350–600 words
+    - Plain, neutral tone
+    - Explain what happened and why it matters
+    - NO hype, no buzzwords, no futurism
+
+    Articles:
+    {articles}
+    """.format(articles=articles_block)
+
+    return textwrap.dedent(prompt).strip()
+
 
     Requirements:
     - 3–6 sections with clear headers
