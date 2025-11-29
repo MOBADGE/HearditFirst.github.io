@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <title>A Little Birdy – Tech News</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+        content="A focused tech news digest summarizing the latest in technology, gadgets, and digital trends in plain language.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="A Little Birdy – Tech News Digest" />
+  <meta property="og:description" content="A clean, ad-free briefing summarizing the latest technology news in plain language." />
+  <meta property="og:image" content="https://alittlebirdy.org/favicon.png" />
+  <meta property="og:url" content="https://alittlebirdy.org/tech.html" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="A Little Birdy – Tech News Digest" />
+  <meta name="twitter:description" content="Simple, readable tech news summaries without the noise." />
+  <meta name="twitter:image" content="https://alittlebirdy.org/favicon.png" />
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2933;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.65);
+      --radius-xl: 1.5rem;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .site-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #38bdf8aa;
+      background-color: #0f172a;
+      padding: 8px;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%   { box-shadow: 0 0 12px #38bdf8aa; }
+      50%  { box-shadow: 0 0 20px #38bdf8ff; }
+      100% { box-shadow: 0 0 12px #38bdf8aa; }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #020617 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .site-header span strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .news-card {
+      background: linear-gradient(135deg, var(--card), var(--bg-soft));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: var(--shadow-soft);
+      padding: 1.75rem 1.75rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .news-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.13), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.10), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .news-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.2);
+    }
+
+    .tagline {
+      margin: 0.75rem 0 1.25rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .article-date {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+
+    #article p {
+      margin: 0 0 0.9rem;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Story section headings only (NOT the sources header) */
+    #article h2:not(.sources-title) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-top: 1.8rem;
+      margin-bottom: 0.6rem;
+      color: #ffffff;
+
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 64, 175, 0.7));
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      letter-spacing: 0.01em;
+    }
+
+    /* Icon only for story headings */
+    #article h2:not(.sources-title)::before {
+      content: "💻";
+      font-size: 1.1rem;
+      display: inline-block;
+    }
+
+    /* Simple style for the Sources header */
+    #article h2.sources-title {
+      font-size: 1.0rem;
+      font-weight: 600;
+      margin-top: 1.6rem;
+      margin-bottom: 0.4rem;
+      color: #e5e7eb;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(148, 163, 184, 0.28);
+      margin: 1.5rem 0 1rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    #article a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    #article a:hover {
+      text-decoration: underline;
+    }
+
+    .source-date {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      margin-top: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .pill span {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .archive-panel {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6);
+      padding: 1rem 1.1rem 0.9rem;
+      font-size: 0.85rem;
+    }
+
+    .archive-title {
+      margin: 0 0 0.75rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .archive-panel ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .archive-panel li {
+      margin-bottom: 0.4rem;
+    }
+
+    .archive-panel a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .archive-panel a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .archive-empty {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+
+      .news-card {
+        padding: 1.3rem 1.2rem 1.1rem;
+      }
+
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      .card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    .feedback-link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .feedback-link a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .feedback-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <!-- Counter.dev analytics -->
+  <script src="https://cdn.counter.dev/script.js"
+          data-id="54e38055-f398-4e20-82e9-5d378945f9d9"
+          data-utcoffset="-6"></script>
+
+  <!-- JSON-LD org metadata -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "A Little Birdy",
+    "url": "https://alittlebirdy.org",
+    "description": "Daily curated news digest summarizing global and technology stories in plain language.",
+    "logo": "https://alittlebirdy.org/favicon.ico"
+  }
+  </script>
+</head>
+
+<body>
+  <div class="page">
+    <header class="site-header">
+      <span><strong>ALITTLEBIRDY.ORG</strong> &nbsp;|&nbsp; Tech News</span>
+      <span>Curated Tech Digest</span>
+    </header>
+
+    <div class="layout">
+      <main class="news-card">
+        <div class="news-inner">
+          <div class="title-row">
+            <div class="logo-container">
+              <img src="/favicon.png" alt="A Little Birdy Logo" class="site-logo">
+            </div>
+
+            <h1>Tech Briefing</h1>
+
+            <div class="badge">
+              <span class="badge-dot"></span>
+              LATEST TECH
+            </div>
+          </div>
+
+          <p class="tagline">
+            Bite-sized summaries of the latest technology, gadgets, and digital trends — without the hype.
+          </p>
+
+          <!-- This div is where a future tech generator can inject the tech article + Updated: date + sources. -->
+          <div id="article">
+            <p class="article-date">
+              Updated: <span id="updated-date"></span>
+            </p>
+            <p>No tech brief yet. Check back soon.</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="pill">
+              Updated Automatically <span>When Tech Stories Change</span>
+            </div>
+            <span><a href="/index.html" style="color: inherit; text-decoration: none;">← Back to main news digest</a></span>
+          </div>
+        </div>
+
+        <div class="feedback-link">
+          <a href="mailto:littlebirdyhelp@gmail.com?subject=Feedback%20on%20Tech%20News&body=Hi%20there%2C%0A%0AI%20wanted%20to%20send%20some%20feedback%20about%20the%20tech%20page%3A%0A">
+            Send feedback or report an issue
+          </a>
+        </div>
+      </main>
+
+      <aside class="archive-panel">
+        <h2 class="archive-title">Tech Archives</h2>
+        <ul id="archive-list">
+          <li class="archive-empty">No previous tech digests yet.</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function setUpdatedDate() {
+        var span = document.getElementById("updated-date");
+        if (!span) return;
+
+        var ts = span.getAttribute("data-ts");
+        if (!ts) return;
+
+        var d = new Date(ts);
+        if (isNaN(d.getTime())) return;
+
+        // Show only the local date, in the viewer's timezone
+        span.textContent = d.toLocaleDateString();
+      }
+
+      setUpdatedDate();
+    })();
+  </script>
+</body>
+</html>
 
