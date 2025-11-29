@@ -192,7 +192,7 @@
       line-height: 1.7;
     }
 
-    /* Story section headings only (NOT the sources header) */
+    /* Story section headings only (NOT the sources ) */
     #article h2:not(.sources-title) {
       display: inline-flex;
       align-items: center;
@@ -219,7 +219,7 @@
       display: inline-block;
     }
 
-    /* Simple style for the Sources header */
+    /* Simple style for the Sources  */
     #article h2.sources-title {
       font-size: 1.0rem;
       font-weight: 600;
@@ -341,7 +341,7 @@
         padding: 1.3rem 1.2rem 1.1rem;
       }
 
-      .site-header {
+      .site- {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.25rem;
@@ -367,6 +367,36 @@
     .feedback-link a:hover {
       text-decoration: underline;
     }
+    .site-nav {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-link {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .nav-link-active {
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.8);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
   </style>
 
   <!-- Counter.dev analytics -->
@@ -393,6 +423,11 @@
       <span><strong>ALITTLEBIRDY.ORG</strong> &nbsp;|&nbsp; Tech News</span>
       <span>Curated Tech Digest</span>
     </header>
+    <nav class="site-nav">
+      <a href="/index.html" class="nav-link">World News</a>
+      <a href="/tech.html" class="nav-link nav-link-active">Tech News</a>
+    </nav>
+  
 
     <div class="layout">
       <main class="news-card">
