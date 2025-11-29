@@ -6,7 +6,8 @@ import xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 from openai import OpenAI
 
-# ----- CONFIG -----
+# ------------- CONFIG -------------
+
 TECH_FEEDS = [
     "https://feeds.arstechnica.com/arstechnica/technology",
     "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
@@ -18,6 +19,8 @@ MAX_ARTICLES = 10
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+
+# ------------- HELPERS -------------
 
 def fetch_rss_items():
     """Pull items from tech RSS feeds."""
@@ -43,9 +46,9 @@ def fetch_rss_items():
                         "pub_raw": pub_raw,
                     })
         except Exception as e:
-            print(f"Error fetching {feed}: {e}")
+            print("Error fetching {}: {}".format(feed, e))
 
-    # De-duplicate
+    # De-duplicate by title
     seen = set()
     unique = []
     for it in items:
@@ -57,12 +60,14 @@ def fetch_rss_items():
 
 
 def format_date(raw):
-    """Convert RSS date → YYYY-MM-DD."""
+    """Convert RSS date -> YYYY-MM-DD."""
+    if not raw:
+        return "Unknown"
     try:
         dt = parsedate_to_datetime(raw)
         return dt.date().strftime("%Y-%m-%d")
-    except:
-        return raw or "Unknown"
+    except Exception:
+        return raw
 
 
 def build_prompt(items):
@@ -70,10 +75,13 @@ def build_prompt(items):
     bullets = []
     for i, it in enumerate(items, start=1):
         bullets.append(
-            f"{i}. {it['title']}\n"
-            f"   Date: {format_date(it['pub_raw'])}\n"
-            f"   {it['description']}\n"
-            f"   Link: {it['link']}"
+            "{}. {}\n   Date: {}\n   {}\n   Link: {}".format(
+                i,
+                it["title"],
+                format_date(it["pub_raw"]),
+                it["description"],
+                it["link"],
+            )
         )
 
     articles_block = "\n\n".join(bullets)
@@ -82,29 +90,17 @@ def build_prompt(items):
     Summarize today's most important TECHNOLOGY news into a clean, readable briefing.
 
     Requirements:
-    - 3–6 sections with clear headers
-    - 350–600 words
+    - 3-6 sections with clear headers
+    - 350-600 words
     - Plain, neutral tone
     - Explain what happened and why it matters
-    - NO hype, no buzzwords, no futurism
+    - No hype, no buzzwords, no futurism
 
     Articles:
     {articles}
     """.format(articles=articles_block)
 
     return textwrap.dedent(prompt).strip()
-
-
-    Requirements:
-    - 3–6 sections with clear headers
-    - 350–600 words
-    - Plain, neutral tone
-    - Explain what happened and why it matters
-    - NO hype, no buzzwords, no futurism
-
-    Articles:
-    { "\n\n".join(bullets) }
-    """)
 
 
 def ask_chatgpt(prompt):
@@ -114,30 +110,32 @@ def ask_chatgpt(prompt):
         messages=[
             {
                 "role": "system",
-                "content": "You write calm, simple, neutral TECH news summaries.",
+                "content": "You write calm, simple, neutral technology news summaries.",
             },
-            {"role": "user", "content": prompt},
+            {
+                "role": "user",
+                "content": prompt,
+            },
         ],
         max_tokens=900,
     )
     return response.choices[0].message.content.strip()
 
 
-def convert_summary_to_html(summary: str):
+def convert_summary_to_html(summary):
     """Turn ChatGPT's markdown-like format into HTML blocks."""
     html = ""
 
     for block in summary.split("\n\n"):
-        block = block.strip()
-        if not block:
+        text = block.strip()
+        if not text:
             continue
 
-        # Convert ### headers
-        if block.startswith("###"):
-            title = block.lstrip("#").strip()
-            html += f"<h2>{title}</h2>\n"
+        if text.startswith("###"):
+            title = text.lstrip("#").strip()
+            html += "<h2>{}</h2>\n".format(title)
         else:
-            html += f"<p>{block}</p>\n"
+            html += "<p>{}</p>\n".format(text)
 
     return html
 
@@ -152,16 +150,14 @@ def update_tech_page(summary_html):
     marker = '<div id="article">'
     start = html.find(marker)
     if start == -1:
-        raise RuntimeError("tech.html missing <div id='article'>")
+        raise RuntimeError("tech.html missing <div id=\"article\">")
 
-    # end of opening tag
     start_tag_end = html.find(">", start)
     end = html.find("</div>", start_tag_end)
 
     before = html[: start_tag_end + 1]
     after = html[end:]
 
-    # Build inner HTML *WITHOUT* using nested f-strings
     inner_html = (
         "\n<p class=\"article-date\">Updated: "
         + today +
@@ -178,6 +174,7 @@ def update_tech_page(summary_html):
     print("tech.html updated with new tech summary.")
 
 
+# ------------- MAIN -------------
 
 def main():
     items = fetch_rss_items()
@@ -193,4 +190,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
