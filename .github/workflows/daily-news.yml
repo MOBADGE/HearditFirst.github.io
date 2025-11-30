@@ -42,24 +42,18 @@ jobs:
     
           
 
-      - name: Commit and push changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+         - name: Commit and push changes
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Make sure we have the latest main first
-          git fetch origin
-          git checkout main
-          git pull --rebase origin main
+        git add index.html tech.html archives/
 
-          # Stage generated files
-          git add index.html tech.html archives/
-
-          # Commit only if there are real changes
-          if git diff --cached --quiet; then
+        if git diff --cached --quiet; then
           echo "No changes to commit."
-          else
+        else
           git commit -m "Daily AI news update"
-          git push origin main
-          fi
+          git push
+        fi
+
 
