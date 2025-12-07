@@ -40,6 +40,12 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python tech_generator.py
+     
+      - name: Run gaming news generator
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python gaming_generator.py
 
       - name: Commit and push changes
         env:
