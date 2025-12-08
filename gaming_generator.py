@@ -18,6 +18,14 @@ GAMING_FEEDS = [
 ]
 
 MAX_ARTICLES = 10
+GAME_KEYWORDS = [
+    "game", "games", "gaming", "videogame", "video game",
+    "xbox", "playstation", "ps5", "ps4", "nintendo", "switch",
+    "steam", "epic games", "valve", "riot", "blizzard",
+    "esport", "esports", "tournament", "dlc", "patch", "update",
+    "fps", "rpg", "mmo", "mmorpg", "battle royale", "indie game",
+]
+
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
@@ -39,8 +47,15 @@ def fetch_rss_items():
                 desc = item.findtext("description", "").strip()
                 link = item.findtext("link", "").strip()
                 pub_raw = item.findtext("pubDate", "").strip()
+                
+                if not title:
+                    continue
+                
 
-                if title:
+            text = (title + " " + desc).lower()
+                if not any(k in text for k in GAME_KEYWORDS):
+                    continue
+                    
                     items.append({
                         "title": title,
                         "description": desc,
