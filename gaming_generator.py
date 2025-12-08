@@ -116,10 +116,16 @@ Scope (include ONLY stories that clearly fit these):
 Ignore:
 - General tech, streaming, politics, or entertainment stories unless they directly impact games or gamers.
 
-Requirements:
-- 3–6 sections with clear headers.
-- Format each section header as a markdown level-3 heading starting with "### ".
-- 350–600 words total.
+Section rules (this is important):
+- Each section must focus on exactly ONE main story.
+- Do NOT combine two different games, updates, companies, or events under the same heading.
+- If you want to cover another major story, give it its own heading.
+
+Formatting requirements:
+- Use 4–7 sections with clear headers.
+- Format each section header as a markdown level-3 heading starting with: "### ".
+- Under each header, write 1–3 paragraphs ONLY about that one story.
+- Total length 350–600 words.
 - Plain, neutral tone.
 - Explain what happened and why it matters.
 - No hype, no buzzwords, no futurism.
@@ -128,8 +134,8 @@ Articles:
 {articles_block}
 """
 
-
     return textwrap.dedent(prompt).strip()
+
 
 
 def ask_chatgpt(prompt):
