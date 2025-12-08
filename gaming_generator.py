@@ -88,24 +88,30 @@ def build_prompt(items):
 
     articles_block = "\n\n".join(bullets)
 
-    prompt = """
-    Summarize today's most important GAMING news into a clear, readable briefing.
+    prompt = f"""
+Summarize today's most important GAMING news into a clear, readable briefing.
 
-    Scope:
-    - Video games
-    - Board games and tabletop
-    - Esports and major industry news
+Scope (include ONLY stories that clearly fit these):
+- Video games (PC, console, mobile)
+- Board games and tabletop
+- Esports and competitive gaming
+- Major business/industry moves that directly affect games or gamers
 
-    Requirements:
-    - 3-6 sections with clear headers
-    - 350-600 words
-    - Plain, neutral tone
-    - Explain what happened and why it matters
-    - No hype, no buzzwords, no futurism
+Ignore:
+- General tech, streaming, politics, or entertainment stories unless they directly impact games or gamers.
 
-    Articles:
-    {articles}
-    """.format(articles=articles_block)
+Requirements:
+- 3–6 sections with clear headers.
+- Format each section header as a markdown level-3 heading starting with "### ".
+- 350–600 words total.
+- Plain, neutral tone.
+- Explain what happened and why it matters.
+- No hype, no buzzwords, no futurism.
+
+Articles:
+{articles_block}
+"""
+
 
     return textwrap.dedent(prompt).strip()
 
