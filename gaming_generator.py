@@ -150,8 +150,15 @@ def ask_chatgpt(prompt):
     return response.choices[0].message.content.strip()
 
 
+
+
 def convert_summary_to_html(summary):
-    """Turn ChatGPT's markdown-style output into HTML blocks."""
+    """Turn ChatGPT's markdown-style output into HTML blocks.
+
+    - Lines starting with '###' become <h2> headings.
+    - Lines that are ONLY '**Title**' (markdown bold) also become <h2>.
+    - Everything else becomes a normal <p>.
+    """
     html = ""
 
     for block in summary.split("\n\n"):
@@ -159,15 +166,27 @@ def convert_summary_to_html(summary):
         if not text:
             continue
 
+        # Case 1: proper markdown header (### Title)
         if text.startswith("###"):
             title = text.lstrip("#").strip()
             html += "<h2>{}</h2>\n".format(title)
-        else:
-            html += "<p>{}</p>\n".format(text)
+            continue
+
+        # Case 2: model used bold instead: **Title**
+        if (
+            text.startswith("**")
+            and text.endswith("**")
+            and text.count("**") == 2
+            and len(text) > 4
+        ):
+            title = text.strip("*").strip()
+            html += "<h2>{}</h2>\n".format(title)
+            continue
+
+        # Default: paragraph
+        html += "<p>{}</p>\n".format(text)
 
     return html
-
-
 def update_gaming_page(summary_html, today):
     """Replace the <div id='article'>...</div> content inside gaming.html."""
     display_date = today.strftime("%B %d, %Y")
