@@ -47,21 +47,23 @@ def fetch_rss_items():
                 desc = item.findtext("description", "").strip()
                 link = item.findtext("link", "").strip()
                 pub_raw = item.findtext("pubDate", "").strip()
-                
-                if not title:
-                    continue
-                
 
-            text = (title + " " + desc).lower()
-                    
-                    items.append({
-                        "title": title,
-                        "description": desc,
-                        "link": link,
-                        "pub_raw": pub_raw,
-                    })
+                # Combine fields for keyword matching
+                text = f"{title} {desc}".lower()
+
+                # Skip items that don’t match gaming keywords
+                if not any(k in text for k in GAME_KEYWORDS):
+                    continue
+
+                items.append({
+                    "title": title,
+                    "description": desc,
+                    "link": link,
+                    "pub_raw": pub_raw,
+                })
+
         except Exception as e:
-            print("Error fetching {}: {}".format(feed, e))
+            print(f"Error fetching {feed}: {e}")
 
     # De-duplicate by title
     seen = set()
@@ -72,6 +74,7 @@ def fetch_rss_items():
             unique.append(it)
 
     return unique[:MAX_ARTICLES]
+
 
 
 def format_date(raw):
