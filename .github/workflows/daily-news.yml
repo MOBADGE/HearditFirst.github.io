@@ -40,7 +40,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python tech_generator.py
-     
+
       - name: Run gaming news generator
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -48,14 +48,16 @@ jobs:
           python gaming_generator.py
 
       - name: Commit and push changes
-  run: |
-    git config user.name "github-actions[bot]"
-    git config user.email "github-actions[bot]@users.noreply.github.com"
-    git add index.html tech.html gaming.html archives/*.html tech_archives/*.html gaming_archives/*.html
-    if git diff --cached --quiet; then
-      echo "No changes to commit."
-    else
-      git commit -m "Daily AI news update"
-      git push
-    fi
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html tech.html gaming.html archives/*.html tech_archives/*.html gaming_archives/*.html
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Daily AI news update"
+            git push
+          fi
+
 
