@@ -53,8 +53,6 @@ def fetch_rss_items():
                 
 
             text = (title + " " + desc).lower()
-                if not any(k in text for k in GAME_KEYWORDS):
-                    continue
                     
                     items.append({
                         "title": title,
