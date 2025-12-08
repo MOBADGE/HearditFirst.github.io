@@ -157,8 +157,17 @@ def convert_summary_to_html(summary):
 
     - Lines starting with '###' become <h2> headings.
     - Lines that are ONLY '**Title**' (markdown bold) also become <h2>.
+    - Filter out non-gaming sections based on GAME_KEYWORDS.
     - Everything else becomes a normal <p>.
     """
+
+    GAME_KEYWORDS = [
+        "game", "gaming", "xbox", "playstation", "ps5", "nintendo",
+        "switch", "steam", "pc release", "dlc", "update", "patch",
+        "league of legends", "valorant", "esports", "tournament",
+        "blizzard", "activision", "bethesda", "ubisoft", "epic",
+    ]
+
     html = ""
 
     for block in summary.split("\n\n"):
@@ -166,13 +175,20 @@ def convert_summary_to_html(summary):
         if not text:
             continue
 
+        # ---------- FILTER OUT NON-GAMING HEADERS ----------
+        lowered = text.lower()
+        if (text.startswith("###") or (text.startswith("**") and text.endswith("**"))):
+            if not any(k in lowered for k in GAME_KEYWORDS):
+                # Skip headings that are clearly not gaming
+                continue
+
         # Case 1: proper markdown header (### Title)
         if text.startswith("###"):
             title = text.lstrip("#").strip()
-            html += "<h2>{}</h2>\n".format(title)
+            html += f"<h2>{title}</h2>\n"
             continue
 
-        # Case 2: model used bold instead: **Title**
+        # Case 2: bold-only header (**Title**)
         if (
             text.startswith("**")
             and text.endswith("**")
@@ -180,13 +196,14 @@ def convert_summary_to_html(summary):
             and len(text) > 4
         ):
             title = text.strip("*").strip()
-            html += "<h2>{}</h2>\n".format(title)
+            html += f"<h2>{title}</h2>\n"
             continue
 
         # Default: paragraph
-        html += "<p>{}</p>\n".format(text)
+        html += f"<p>{text}</p>\n"
 
     return html
+
 def update_gaming_page(summary_html, today):
     """Replace the <div id='article'>...</div> content inside gaming.html."""
     display_date = today.strftime("%B %d, %Y")
