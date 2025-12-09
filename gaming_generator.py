@@ -3,6 +3,7 @@ import datetime
 import textwrap
 import requests
 import xml.etree.ElementTree as ET
+import re
 from email.utils import parsedate_to_datetime
 from openai import OpenAI
 
@@ -22,6 +23,43 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # ------------- HELPERS -------------
 
+def _find_encoded_content(item):
+    """
+    Try to find a content:encoded element (common in RSS) and return its text.
+    Falls back to None if not found.
+    """
+    for child in item:
+        # handle namespaces: tag may look like '{http://purl.org/rss/1.0/modules/content/}encoded'
+        tag = child.tag or ""
+        if tag.lower().endswith("encoded"):
+            return (child.text or "").strip()
+    return None
+
+
+def clean_truncation(text):
+    """
+    Remove trailing '[...]', trailing '...' or trailing '…', and convert inline '[...]'
+    into a single ellipsis character for readability.
+    """
+    if not text:
+        return text
+
+    # Normalize whitespace
+    text = text.strip()
+
+    # Replace inline bracketed ellipses with a single ellipsis character
+    text = re.sub(r'\[\s*\.\s*\.\s*\.\s*\]', '…', text)
+
+    # Remove trailing bracketed ellipsis like "[...]" or " [...]"
+    text = re.sub(r'\s*\[\s*\.\s*\.\s*\.\s*\]\s*$', '', text)
+
+    # Remove trailing sequences of dots (three or more) or trailing ellipsis char
+    text = re.sub(r'\.{3,}\s*$', '', text)
+    text = re.sub(r'…\s*$', '', text)
+
+    return text.strip()
+
+
 def fetch_rss_items():
     """Pull items from gaming RSS feeds."""
     items = []
@@ -34,9 +72,14 @@ def fetch_rss_items():
 
             for item in root.iter("item"):
                 title = item.findtext("title", "").strip()
-                desc = item.findtext("description", "").strip()
+                # Prefer content:encoded when available (often contains fuller article HTML/text)
+                desc = _find_encoded_content(item) or item.findtext("description", "") or ""
+                desc = desc.strip()
                 link = item.findtext("link", "").strip()
                 pub_raw = item.findtext("pubDate", "").strip()
+
+                # Clean obvious truncation markers
+                desc = clean_truncation(desc)
 
                 if title:
                     items.append({
@@ -75,7 +118,7 @@ def build_prompt(items):
     bullets = []
     for i, it in enumerate(items, start=1):
         bullets.append(
-            "{}. {}\n   Date: {}\n   {}\n   Link: {}".format(
+            "{}{}. {}\n   Date: {}\n   {}\n   Link: {}".format(
                 i,
                 it["title"],
                 format_date(it["pub_raw"]),
@@ -135,6 +178,8 @@ def convert_summary_to_html(summary):
             title = text.lstrip("#").strip()
             html += "<h2>{}</h2>\n".format(title)
         else:
+            # Ensure we don't propagate trailing truncation markers from the model
+            text = clean_truncation(text)
             html += "<p>{}</p>\n".format(text)
 
     return html
