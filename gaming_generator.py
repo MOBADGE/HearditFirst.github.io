@@ -13,7 +13,7 @@ GAMING_FEEDS = [
     "https://www.pcgamer.com/rss/",
     "https://www.gamespot.com/feeds/mashup/",
     "https://www.polygon.com/rss/index.xml",
-    "https://www.news eurogamer.net/feed/ ",
+    "https://www.eurogamer.net/feed/",
 ]
 
 MAX_ARTICLES = 10
@@ -118,7 +118,7 @@ def build_prompt(items):
     bullets = []
     for i, it in enumerate(items, start=1):
         bullets.append(
-            "{}{}. {}\n   Date: {}\n   {}\n   Link: {}".format(
+            "{} . {}\n   Date: {}\n   {}\n   Link: {}".format(
                 i,
                 it["title"],
                 format_date(it["pub_raw"]),
@@ -220,6 +220,7 @@ def update_gaming_page(summary_html):
 
 
 # ------------- MAIN -------------
+
 
 def main():
     items = fetch_rss_items()
