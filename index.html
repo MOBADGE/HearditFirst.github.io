@@ -7,6 +7,27 @@
 
   <title>A Little Bird Told Me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+        content="An hourly news digest summarizing top world stories in plain language. Updated every hour at alittlebirdy.org.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="A Little Birdy – Daily News Digest" />
+  <meta property="og:description" content="A clean, ad-free daily briefing summarizing global events in plain language." />
+  <meta property="og:image" content="https://alittlebirdy.org/favicon.png" />
+  <meta property="og:url" content="https://alittlebirdy.org" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="A Little Birdy – Daily News Digest" />
+  <meta name="twitter:description" content="A clean, ad-free daily briefing summarizing global events in plain language." />
+  <meta name="twitter:image" content="https://alittlebirdy.org/favicon.png" />
+
   <style>
     :root {
       --bg: #0f172a;
@@ -20,91 +41,33 @@
       --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.65);
       --radius-xl: 1.5rem;
     }
+
     .logo-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-  margin-top: 1rem;
-}
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.5rem;
+      margin-top: 1rem;
+    }
 
-.site-logo {
-  width: 70px;       /* adjust as needed */
-  height: 70px;
-  border-radius: 50%; /* makes it circular */
-  box-shadow: 0 0 12px #38bdf8aa; /* teal glow */
-  background-color: #0f172a; /* subtle backdrop */
-  padding: 8px;
-  animation: glowPulse 3s ease-in-out infinite;
-}
-  .site-nav {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    font-size: 0.85rem;
-}
+    .site-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #38bdf8aa;
+      background-color: #0f172a;
+      padding: 8px;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
 
-  .nav-link {
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    text-decoration: none;
-    color: var(--muted);
-    border: 1px solid transparent;
-    background: transparent;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-}
-
-.nav-link:hover {
-  color: var(--accent);
-  border-color: rgba(56, 189, 248, 0.4);
-  background: rgba(15, 23, 42, 0.8);
-}
-
-.nav-link-active {
-  color: #ffffff;
-  border-color: rgba(56, 189, 248, 0.8);
-  background: rgba(15, 23, 42, 0.95);
-}
-  
-
-/* Optional pulsing glow animation */
-@keyframes glowPulse {
-  0%   { box-shadow: 0 0 12px #38bdf8aa; }
-  50%  { box-shadow: 0 0 20px #38bdf8ff; }
-  100% { box-shadow: 0 0 12px #38bdf8aa; }
-}
-
-<link rel="icon" type="image/png" href="/favicon.png" />
-<link rel="apple-touch-icon" href="/favicon.png" />
-<link rel="shortcut icon" type="image/png" href="/favicon.png" />
-    
-<meta property="og:title" content="A Little Birdy – Daily News Digest" />
-<meta property="og:description" content="A clean, ad-free daily briefing summarizing global events in plain language." />
-<meta property="og:image" content="https://alittlebirdy.org/favicon.png" />
-<meta property="og:url" content="https://alittlebirdy.org" />
-<meta property="og:type" content="website" />
-
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="A Little Birdy – Daily News Digest" />
-<meta name="twitter:description" content="A clean, ad-free daily briefing summarizing global events in plain language." />
-<meta name="twitter:image" content="https://alittlebirdy.org/favicon.png" />
-
-
-
+    @keyframes glowPulse {
+      0%   { box-shadow: 0 0 12px #38bdf8aa; }
+      50%  { box-shadow: 0 0 20px #38bdf8ff; }
+      100% { box-shadow: 0 0 12px #38bdf8aa; }
+    }
 
     * {
       box-sizing: border-box;
     }
-   
-    {
-  "@context": "https://schema.org",
-  "@type": "NewsMediaOrganization",
-  "name": "A Little Birdy",
-  "url": "https://alittlebirdy.org",
-  "description": "Daily curated news digest summarizing global events in plain language.",
-  "logo": "https://alittlebirdy.org/favicon.ico"
-}
-
 
     body {
       margin: 0;
@@ -122,13 +85,6 @@
       width: 100%;
       max-width: 1080px;
     }
-    <img src="/favicon.png" alt="A Little Birdy logo" class="site-logo" />
-.site-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-}
-
 
     .site-header {
       display: flex;
@@ -402,28 +358,70 @@
         align-items: flex-start;
       }
     }
-      .feedback-link {
-        margin-top: 12px;
-        text-align: center;
-        font-size: 0.9rem;
+
+    .feedback-link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.9rem;
     }
 
-      .feedback-link a {
-        color: #38bdf8;  /* your site’s accent teal */
-        text-decoration: none;
+    .feedback-link a {
+      color: #38bdf8;
+      text-decoration: none;
     }
 
-      .feedback-link a:hover {
-        text-decoration: underline;
+    .feedback-link a:hover {
+      text-decoration: underline;
+    }
+
+    .site-nav {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .nav-link {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid transparent;
+      background: transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .nav-link-active {
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.8);
+      background: rgba(15, 23, 42, 0.95);
     }
 
   </style>
-  <script src="https://cdn.counter.dev/script.js" 
-          data-id="54e38055-f398-4e20-82e9-5d378945f9d9" 
-          data-utcoffset="-6"></script>
-  <meta name="description" 
-  content="An hourly news digest summarizing top world stories in plain language. Updated every hour at alittlebirdy.org.">
 
+  <!-- Counter.dev analytics -->
+  <script src="https://cdn.counter.dev/script.js"
+          data-id="54e38055-f398-4e20-82e9-5d378945f9d9"
+          data-utcoffset="-6"></script>
+
+  <!-- JSON-LD org metadata -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "A Little Birdy",
+    "url": "https://alittlebirdy.org",
+    "description": "Daily curated news digest summarizing global events in plain language.",
+    "logo": "https://alittlebirdy.org/favicon.ico"
+  }
+  </script>
 </head>
 <body>
   <div class="page">
