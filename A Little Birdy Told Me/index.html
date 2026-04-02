@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Little Birdy Told Me | Clear Breaking News</title>
+  <meta
+    name="description"
+    content="A Little Birdy Told Me scans fast-moving headlines, strips out loaded phrasing, and presents tech, world, health, and gaming developments in clean, urgent summaries."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="home">
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html">
+        <span class="brand-mark">AB</span>
+        <span class="brand-copy">
+          <strong>A Little Birdy Told Me</strong>
+          <span>Breaking news, stripped clean.</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./tech.html">Tech</a>
+        <a href="./world.html">World</a>
+        <a href="./health.html">Health</a>
+        <a href="./gaming.html">Gaming</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Scanning signals across the day</p>
+          <h1>Breaking coverage with the heat turned down.</h1>
+          <p class="hero-text">
+            A Little Birdy Told Me tracks fast-moving reports, removes biased inflections, and turns them into neutral briefs people can scan in seconds.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#frontlines">See latest briefs</a>
+            <a class="button button-secondary" href="#process">How sanitizing works</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="signal-grid" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="hero-panel-copy">
+            <p class="panel-label">Live desk view</p>
+            <div class="hero-stat">
+              <strong id="headline-count">0</strong>
+              <span>neutralized updates loaded</span>
+            </div>
+            <div class="hero-stat">
+              <strong>4 desks</strong>
+              <span>tech, world, health, and gaming</span>
+            </div>
+            <div class="hero-stat">
+              <strong>2 layers</strong>
+              <span>source phrasing vs straight brief</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Headline scanner">
+        <div class="ticker-track" id="ticker-track"></div>
+      </section>
+
+      <section class="section section-frontlines" id="frontlines">
+        <div class="section-heading">
+          <p class="eyebrow">Frontlines</p>
+          <h2>One page. Four desks. Enough urgency to act.</h2>
+        </div>
+        <div class="frontline-grid" id="home-frontlines"></div>
+      </section>
+
+      <section class="section section-process" id="process">
+        <div class="section-heading">
+          <p class="eyebrow">Neutralization process</p>
+          <h2>We preserve the facts and remove the spin.</h2>
+        </div>
+        <div class="process-grid">
+          <article>
+            <span>01</span>
+            <h3>Scan incoming language</h3>
+            <p>Fast summaries surface the claims, timeline, and reported impact from each item entering the desk.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Flag loaded wording</h3>
+            <p>Emotionally charged verbs and political framing cues are highlighted before publication.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Rewrite for clarity</h3>
+            <p>The final brief centers on what happened, who is affected, and what remains uncertain.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section spotlight">
+        <div class="section-heading">
+          <p class="eyebrow">Today's mix</p>
+          <h2>Category snapshots built to pull readers deeper.</h2>
+        </div>
+        <div class="snapshot-row" id="snapshot-row"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
